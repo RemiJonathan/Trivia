@@ -9,6 +9,9 @@ public class Question {
         this.answerTrue = answerTrue;
     }
 
+    public Question() {
+    }
+
     public String getAnswer() {
         return answer;
     }

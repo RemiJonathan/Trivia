@@ -1,14 +1,17 @@
 package com.remijonathan.trivia;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.remijonathan.trivia.data.AnswerListAsyncResponse;
 import com.remijonathan.trivia.data.QuestionBank;
@@ -102,10 +105,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void testQuestion(boolean response){
         if (response == questionList.get(index).isAnswerTrue()){
             //TODO: Answer correct
+            shakeAnimation(true);
+            updateQuestion();
             Toast.makeText(this,"Correct", Toast.LENGTH_SHORT).show();
+
         }else {
             //TODO: Answer incorrect
+            shakeAnimation(false);
+            updateQuestion();
             Toast.makeText(this,"Incorrect", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void shakeAnimation(final boolean exactitude){
+        Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake_animation);
+        final CardView cardView = findViewById(R.id.question_card);
+        cardView.setAnimation(shake);
+
+        shake.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                if (exactitude) {
+                    cardView.setCardBackgroundColor(Color.GREEN);
+                } else {
+                    cardView.setCardBackgroundColor(Color.RED);
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                cardView.setCardBackgroundColor(Color.WHITE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
     }
 }

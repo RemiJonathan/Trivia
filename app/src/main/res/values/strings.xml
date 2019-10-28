@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Trivia</string>
+    <string name="trivia_logo">Trivia Application Logo</string>
+    <string name="high_score">High Score: 0</string>
+    <string name="current_score">Current Score: 0</string>
+    <string name="x_out_of_y">0 out of 0</string>
+    <string name="question_placeholder">How much wood would a woodchuck chuck if a woodchuck could chuck wood?</string>
+    <string name="false_value">False</string>
+    <string name="true_value">True</string>
 </resources>

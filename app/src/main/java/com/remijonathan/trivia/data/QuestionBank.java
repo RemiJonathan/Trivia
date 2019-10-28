@@ -34,13 +34,14 @@ public class QuestionBank {
                         for(int i = 0; i<response.length();i++){
                             try {
                                 question.setAnswer(response.getJSONArray(i).getString(0));
-                                question.setAnswer(response.getJSONArray(i).getString(1));
+                                question.setAnswerTrue(response.getJSONArray(i).getBoolean(1));
+                                Log.d("JSON", question.getAnswer());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
                         }
-                        Log.d("JSON", "onResponse: " + response);
+
 
                         if(null != callback){
                             callback.processFinished(questionArrayList);

@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         trueButton = findViewById(R.id.true_button);
         nextButton = findViewById(R.id.next_button);
 
-
-
         questionList = new QuestionBank().getQuestions(new AnswerListAsyncResponse() {
             @Override
             public void processFinished(ArrayList<Question> questionArrayList) {
@@ -51,17 +49,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        int size = questionList.size();
-
-
-
         backButton.setOnClickListener(this);
         falseButton.setOnClickListener(this);
         trueButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
-
-
-
     }
 
 

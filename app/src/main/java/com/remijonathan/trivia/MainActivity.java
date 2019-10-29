@@ -16,9 +16,12 @@ import androidx.cardview.widget.CardView;
 import com.remijonathan.trivia.data.AnswerListAsyncResponse;
 import com.remijonathan.trivia.data.QuestionBank;
 import com.remijonathan.trivia.model.Question;
+import com.remijonathan.trivia.model.Score;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView completedIndex;
@@ -27,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button falseButton;
     private Button trueButton;
     //private ImageButton nextButton;
+    private TextView currentScore;
+    private Score score = new Score();
 
     List<Question> questionList;
 
@@ -43,14 +48,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         falseButton = findViewById(R.id.false_button);
         trueButton = findViewById(R.id.true_button);
         //nextButton = findViewById(R.id.next_button);
+        currentScore = findViewById(R.id.current_score);
 
         questionList = new QuestionBank().getQuestions(new AnswerListAsyncResponse() {
             @Override
             public void processFinished(ArrayList<Question> questionArrayList) {
                 questionText.setText(questionArrayList.get(index).getAnswer());
                 completedIndex.setText(String.format("%d out of %d", index+1, questionArrayList.size()));
+                updateScore();
             }
         });
+
 
 //      backButton.setOnClickListener(this);
         falseButton.setOnClickListener(this);
@@ -97,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void updateQuestion(){
+        if (index == 1)Collections.shuffle(questionList);
         if (index < 0) index = questionList.size()-1;
         if(index > questionList.size()-1) index = 0;
             questionText.setText(questionList.get(index % questionList.size()).getAnswer());
@@ -107,12 +116,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void testQuestion(boolean response){
         if (response == questionList.get(index).isAnswerTrue()){
             //TODO: Answer correct
+            score.changeScore(10);
+            updateScore();
             shakeAnimation(true);
             updateQuestion();
             Toast.makeText(this,"Correct", Toast.LENGTH_SHORT).show();
 
         }else {
             //TODO: Answer incorrect
+            score.changeScore(-10);
+            updateScore();
             shakeAnimation(false);
             updateQuestion();
             Toast.makeText(this,"Incorrect", Toast.LENGTH_SHORT).show();
@@ -145,5 +158,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+    }
+
+    public void updateScore(){
+        currentScore.setText(String.format("Current Score: %d", score.getScore()));
     }
 }

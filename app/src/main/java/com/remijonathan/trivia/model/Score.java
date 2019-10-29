@@ -16,7 +16,7 @@ public class Score {
 
     /**
      * Change the value of score based on int amount
-     * @param add
+     * @param add amount to be added to the score, pass a negative integer to lower the score
      */
     public void changeScore(int add){
         score +=add;

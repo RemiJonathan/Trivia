@@ -23,10 +23,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView completedIndex;
     private TextView questionText;
-    private ImageButton backButton;
+    //private ImageButton backButton;
     private Button falseButton;
     private Button trueButton;
-    private ImageButton nextButton;
+    //private ImageButton nextButton;
 
     List<Question> questionList;
 
@@ -39,10 +39,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         completedIndex = findViewById(R.id.completed_index);
         questionText = findViewById(R.id.question_text);
-        backButton= findViewById(R.id.back_button);
+        //backButton= findViewById(R.id.back_button);
         falseButton = findViewById(R.id.false_button);
         trueButton = findViewById(R.id.true_button);
-        nextButton = findViewById(R.id.next_button);
+        //nextButton = findViewById(R.id.next_button);
 
         questionList = new QuestionBank().getQuestions(new AnswerListAsyncResponse() {
             @Override
@@ -52,28 +52,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        backButton.setOnClickListener(this);
+//      backButton.setOnClickListener(this);
         falseButton.setOnClickListener(this);
         trueButton.setOnClickListener(this);
-        nextButton.setOnClickListener(this);
+//      nextButton.setOnClickListener(this);
     }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.back_button:
+            /*case R.id.back_button:
                 //TODO: Back button does something.
                 //Debug
                 //Toast.makeText(this,"Back", Toast.LENGTH_SHORT).show();
                 index--;
                 updateQuestion();
-                break;
+                break;*/
 
             case R.id.false_button:
                 //TODO: False button claims that statement is false
                 //Debug
                 //Toast.makeText(this,"False", Toast.LENGTH_SHORT).show();
+                index++;
                 testQuestion(false);
                 break;
 
@@ -81,16 +82,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //TODO: True button claims that statement is true
                 //Debug
                 //Toast.makeText(this,"True", Toast.LENGTH_SHORT).show();
+                index++;
                 testQuestion(true);
                 break;
 
-            case R.id.next_button:
+            /*case R.id.next_button:
                 //TODO: switches to next question
                 //Debug
                 //Toast.makeText(this,"Next", Toast.LENGTH_SHORT).show();
                 index++;
                 updateQuestion();
-                break;
+                break;*/
         }
     }
 

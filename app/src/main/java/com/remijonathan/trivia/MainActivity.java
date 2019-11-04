@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,11 +16,11 @@ import com.remijonathan.trivia.data.AnswerListAsyncResponse;
 import com.remijonathan.trivia.data.QuestionBank;
 import com.remijonathan.trivia.model.Question;
 import com.remijonathan.trivia.model.Score;
+import com.remijonathan.trivia.util.Preferences;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView completedIndex;
@@ -31,16 +30,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button trueButton;
     //private ImageButton nextButton;
     private TextView currentScore;
+    private TextView highScoreText;
     private Score score = new Score();
 
     List<Question> questionList;
 
     int index;
+    Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        preferences = new Preferences(this);
+
 
         completedIndex = findViewById(R.id.completed_index);
         questionText = findViewById(R.id.question_text);
@@ -49,12 +53,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         trueButton = findViewById(R.id.true_button);
         //nextButton = findViewById(R.id.next_button);
         currentScore = findViewById(R.id.current_score);
+        highScoreText = findViewById(R.id.high_score);
+        updateHighScore();
 
         questionList = new QuestionBank().getQuestions(new AnswerListAsyncResponse() {
             @Override
             public void processFinished(ArrayList<Question> questionArrayList) {
                 questionText.setText(questionArrayList.get(index).getAnswer());
-                completedIndex.setText(String.format("%d out of %d", index+1, questionArrayList.size()));
+                completedIndex.setText(String.format(getString(R.string.PROGRESS), index + 1, questionArrayList.size()));
                 updateScore();
             }
         });
@@ -104,35 +110,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    void updateQuestion(){
-        if (index == 1)Collections.shuffle(questionList);
-        if (index < 0) index = questionList.size()-1;
-        if(index > questionList.size()-1) index = 0;
-            questionText.setText(questionList.get(index % questionList.size()).getAnswer());
+    void updateQuestion() {
+        if (index == 1) Collections.shuffle(questionList);
+        if (index < 0) index = questionList.size() - 1;
+        if (index > questionList.size() - 1) index = 0;
+        questionText.setText(questionList.get(index % questionList.size()).getAnswer());
 
-            completedIndex.setText(String.format("%d out of %d", (index+1), questionList.size()));
+        completedIndex.setText(String.format(getString(R.string.PROGRESS), (index + 1), questionList.size()));
     }
 
-    void testQuestion(boolean response){
-        if (response == questionList.get(index).isAnswerTrue()){
+    void testQuestion(boolean response) {
+        if (response == questionList.get(index).isAnswerTrue()) {
             //TODO: Answer correct
             score.changeScore(10);
             updateScore();
             shakeAnimation(true);
             updateQuestion();
-            Toast.makeText(this,"Correct", Toast.LENGTH_SHORT).show();
+            updateHighScore();
+            Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
 
-        }else {
+        } else {
             //TODO: Answer incorrect
             score.changeScore(-10);
             updateScore();
             shakeAnimation(false);
             updateQuestion();
-            Toast.makeText(this,"Incorrect", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Incorrect", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void shakeAnimation(final boolean exactitude){
+    private void shakeAnimation(final boolean exactitude) {
         Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake_animation);
         final CardView cardView = findViewById(R.id.question_card);
         cardView.setAnimation(shake);
@@ -160,7 +167,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void updateScore(){
-        currentScore.setText(String.format("Current Score: %d", score.getScore()));
+    public void updateScore() {
+        currentScore.setText(String.format(getString(R.string.CURRENT_SCORE), score.getScore()));
+    }
+
+    //Set highscore to current score if said score is higher; the saveHighScore method handles this.
+    public void updateHighScore() {
+        preferences.saveHighScore(score.getScore());
+        highScoreText.setText(String.format(getString(R.string.HIGH_SCORE), preferences.getHighScore()));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        preferences.saveHighScore(score.getScore());
     }
 }

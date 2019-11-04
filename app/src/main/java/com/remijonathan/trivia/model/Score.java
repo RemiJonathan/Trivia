@@ -10,6 +10,10 @@ public class Score {
     public Score() {
     }
 
+    public void setScore(int score){
+        this.score = score;
+    }
+
     public int getScore(){
         return score;
     }

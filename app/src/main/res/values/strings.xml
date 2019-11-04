@@ -7,4 +7,7 @@
     <string name="question_placeholder">How much wood would a woodchuck chuck if a woodchuck could chuck wood?</string>
     <string name="false_value">False</string>
     <string name="true_value">True</string>
+    <string name="HIGH_SCORE">High Score: %d</string>
+    <string name="PROGRESS">%d out of %d</string>
+    <string name="CURRENT_SCORE">Current Score: %d</string>
 </resources>

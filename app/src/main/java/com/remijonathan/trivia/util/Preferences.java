@@ -8,7 +8,7 @@ public class Preferences {
     private SharedPreferences sharedPreferences;
 
     public Preferences(Activity activity){
-        this.sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+        sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
     }
 
     public void saveHighScore(int currentScore){
@@ -20,4 +20,6 @@ public class Preferences {
     public int getHighScore(){
         return sharedPreferences.getInt("high_score",0);
     }
+
+
 }

@@ -29,6 +29,14 @@ public class Preferences {
         return sharedPreferences.getInt("high_score",0);
     }
 
+    public void saveCurrentScore(int currentScore){
+        sharedPreferences.edit().putInt("current_score", currentScore).apply();
+    }
+
+    public int getCurrentScore(){
+        return sharedPreferences.getInt("current_score",0);
+    }
+
     public void saveIndex(int questionIndex){
         sharedPreferences.edit().putInt("question_index", questionIndex).apply();
     }

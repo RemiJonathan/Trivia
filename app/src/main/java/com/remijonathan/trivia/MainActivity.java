@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateHighScore();
 
         index = preferences.loadIndex();
+        score.setScore(preferences.getCurrentScore());
 
         if (preferences.loadQuestions() != null) {
             Toast.makeText(this,"Loaded Questions", Toast.LENGTH_LONG).show();
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
+        preferences.saveCurrentScore(score.getScore());
         preferences.saveHighScore(score.getScore());
         preferences.saveIndex(index);
     }

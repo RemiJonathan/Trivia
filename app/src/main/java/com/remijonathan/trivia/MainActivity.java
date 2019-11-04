@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation;
 import android.widget.Button;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         score.setScore(preferences.getCurrentScore());
 
         if (preferences.loadQuestions() != null) {
-            Toast.makeText(this,"Loaded Questions", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this,"Loaded Questions", Toast.LENGTH_LONG).show();
             questionList = preferences.loadQuestions();
 
             questionText.setText(questionList.get(index).getAnswer());
@@ -149,9 +150,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             score.changeScore(10);
             updateScore();
             shakeAnimation(true);
+            fadeAnimate();
             updateQuestion();
             updateHighScore();
-            Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
+
 
         } else {
             //TODO: Answer incorrect
@@ -159,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             updateScore();
             shakeAnimation(false);
             updateQuestion();
-            Toast.makeText(this, "Incorrect", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Incorrect", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -207,5 +210,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         preferences.saveCurrentScore(score.getScore());
         preferences.saveHighScore(score.getScore());
         preferences.saveIndex(index);
+    }
+
+    public void fadeAnimate(){
+        final CardView cardView = findViewById(R.id.question_card);
+        Animation animationFade = new AlphaAnimation(0f,1f);
+        animationFade.setDuration(200);
+        cardView.startAnimation(animationFade);
+        animationFade.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                cardView.setCardBackgroundColor(Color.GREEN);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                cardView.setCardBackgroundColor(Color.WHITE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+
+        //cardView.startAnimation(animationFade);
     }
 }

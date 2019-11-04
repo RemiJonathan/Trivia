@@ -2,6 +2,7 @@ package com.remijonathan.trivia;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation;
@@ -56,15 +57,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         highScoreText = findViewById(R.id.high_score);
         updateHighScore();
 
-        questionList = new QuestionBank().getQuestions(new AnswerListAsyncResponse() {
-            @Override
-            public void processFinished(ArrayList<Question> questionArrayList) {
-                questionText.setText(questionArrayList.get(index).getAnswer());
-                completedIndex.setText(String.format(getString(R.string.PROGRESS), index + 1, questionArrayList.size()));
-                updateScore();
-            }
-        });
+        index = preferences.loadIndex();
 
+        if (preferences.loadQuestions() != null) {
+            Toast.makeText(this,"Loaded Questions", Toast.LENGTH_LONG).show();
+            questionList = preferences.loadQuestions();
+
+            questionText.setText(questionList.get(index).getAnswer());
+            completedIndex.setText(String.format(getString(R.string.PROGRESS), index + 1, questionList.size()));
+            updateScore();
+        } else {
+            questionList = new QuestionBank().getQuestions(new AnswerListAsyncResponse() {
+                @Override
+                public void processFinished(ArrayList<Question> questionArrayList) {
+                    Collections.shuffle(questionArrayList);
+                    questionText.setText(questionArrayList.get(index).getAnswer());
+                    completedIndex.setText(String.format(getString(R.string.PROGRESS), index + 1, questionArrayList.size()));
+                    updateScore();
+
+                    preferences.saveQuestions(questionArrayList);
+                }
+            });
+
+
+        }
 
 //      backButton.setOnClickListener(this);
         falseButton.setOnClickListener(this);
@@ -111,9 +127,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void updateQuestion() {
-        if (index == 1) Collections.shuffle(questionList);
+        if (index == 1) {
+            preferences.saveQuestions(questionList);
+            Log.d("questions","saveQuestions: Questions saved");
+        }
         if (index < 0) index = questionList.size() - 1;
-        if (index > questionList.size() - 1) index = 0;
+        if (index > questionList.size() - 1){ index = 0;
+            Collections.shuffle(questionList);
+            preferences.saveQuestions(questionList);
+            Log.d("questions","saveQuestions: Questions saved");
+        }
         questionText.setText(questionList.get(index % questionList.size()).getAnswer());
 
         completedIndex.setText(String.format(getString(R.string.PROGRESS), (index + 1), questionList.size()));
@@ -181,5 +204,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         preferences.saveHighScore(score.getScore());
+        preferences.saveIndex(index);
     }
 }
